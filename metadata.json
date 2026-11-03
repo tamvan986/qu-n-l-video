@@ -1,0 +1,8 @@
+{
+  "name": "QUẢN LÝ XEM VIDEO NGẮN",
+  "description": "Hệ thống Quản lý Tâm lý & Thói quen Video Ngắn dành cho Học sinh & Nhà trường: Dừng 10 giây tĩnh tâm, Đổi 15 phút việc lành mạnh, Cây Hạnh Phúc nuôi dưỡng tinh thần và Phân tích Phổ điểm DBSCAN.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

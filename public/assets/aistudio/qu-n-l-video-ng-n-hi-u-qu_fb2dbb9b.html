@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Quản lý video ngắn hiệu quả</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f5f3; --surface:#ffffff; --surface2:#eef3f0; --ink:#17251f; --muted:#5b6b62;
+  --line:#d8e2dc; --teal:#0f766e; --teal-dark:#0b5c56; --amber:#d97706; --amber-bg:#fef3c7;
+  --green:#15803d; --green-bg:#dcfce7; --red:#b91c1c; --red-bg:#fee2e2; --orange:#c2410c; --orange-bg:#ffedd5;
+  --yellow-bg:#fef9c3; --radius:16px; --shadow:0 6px 24px rgba(15,40,32,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0e1512; --surface:#18211d; --surface2:#1f2c26; --ink:#eef4f0; --muted:#a7b8ad;
+    --line:#2c3d35; --teal:#2dd4bf; --teal-dark:#5eead4; --amber:#fbbf24; --amber-bg:#3a2c08;
+    --green:#4ade80; --green-bg:#122e1c; --red:#f87171; --red-bg:#3a1515; --orange:#fb923c; --orange-bg:#3a2312;
+    --yellow-bg:#3a3208; --shadow:0 6px 24px rgba(0,0,0,.35); }
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+button,input,select,textarea{font:inherit}
+.wrap{max-width:1060px;margin:0 auto;padding:14px 14px 48px}
+.topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:6px 0 14px}
+.role-tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.role-tabs button{border:0;background:transparent;padding:9px 14px;border-radius:999px;font-weight:700;cursor:pointer;color:var(--muted)}
+.role-tabs button[aria-selected="true"]{background:var(--teal);color:#fff}
+.session-note{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.session-note b{color:var(--ink)}
+.hero{background:var(--teal);color:#fff;border-radius:20px;padding:22px 22px 18px;box-shadow:var(--shadow)}
+.hero h1{margin:0 0 6px;font-size:26px;line-height:1.25;letter-spacing:-.01em}
+.hero p{margin:0;opacity:.95;max-width:640px;font-size:15px}
+.hero .hero-actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 15px;border-radius:12px;font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(.97)}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.dark{background:#123f39;border-color:#123f39;color:#fff}
+.btn.warn{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn.ghost{background:transparent}
+.btn.small{padding:7px 11px;font-size:13px;border-radius:10px}
+.btn.danger{color:var(--red);border-color:var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-white{background:#fff;color:#0f766e;border-color:#fff}
+.grid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:820px){ .grid.two{grid-template-columns:1.15fr .85fr} .grid.three{grid-template-columns:repeat(3,1fr)} .grid.half{grid-template-columns:1fr 1fr} }
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:19px}
+.card h3{margin:0 0 8px;font-size:16px}
+.lead{color:var(--muted);margin:0 0 12px;font-size:14px}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink)}
+textarea{min-height:74px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row>*{flex:1 1 auto}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1px solid var(--line);background:var(--surface2);padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
+.meter-wrap{margin:14px 0 6px}
+.meter{height:16px;border-radius:999px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.meter>div{height:100%;background:var(--teal);transition:width .3s}
+.meter>div.over{background:var(--red)}
+.big-num{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.02em}
+.status{padding:10px 12px;border-radius:12px;font-weight:700;margin-top:12px}
+.status.ok{background:var(--green-bg);color:var(--green)}
+.status.warn{background:var(--amber-bg);color:#92400e}
+.status.over{background:var(--red-bg);color:var(--red)}
+@media(prefers-color-scheme:dark){.status.warn{color:#fde68a}}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+@media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:12px}
+.kpi b{display:block;font-size:22px}
+.kpi span{font-size:12.5px;color:var(--muted)}
+.log-item{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:9px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.log-item b{font-size:15px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);margin-right:5px}
+.empty{border:1.5px dashed var(--line);border-radius:13px;padding:16px;color:var(--muted);margin-top:10px}
+.banner{border-radius:13px;padding:12px 14px;margin-top:14px;font-size:14px}
+.banner.demo{background:var(--amber-bg);border:1px solid var(--amber)}
+.banner.info{background:var(--surface2);border:1px solid var(--line)}
+.notice{font-size:13.5px;color:var(--muted)}
+.timer-box{text-align:center;padding:18px;border:2px solid var(--teal);border-radius:16px;margin-top:12px}
+.timer-box .time{font-size:52px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.checkline{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+.checkline:last-child{border-bottom:0}
+.checkline input{width:22px;height:22px;margin-top:2px;flex:none}
+.principle{border-top:4px solid var(--teal);border-radius:12px}
+.principle:nth-child(2){border-color:var(--amber)} .principle:nth-child(3){border-color:var(--green)} .principle:nth-child(4){border-color:var(--orange)}
+.principle .num{font-size:13px;font-weight:800;color:var(--teal)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted)}
+.pill-ok{color:var(--green);font-weight:800}.pill-bad{color:var(--red);font-weight:800}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:var(--surface)}
+summary{font-weight:700;cursor:pointer}
+.lock-screen{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;place-items:center;z-index:50;padding:16px}
+.lock-screen.open{display:grid}
+.lock-card{background:var(--surface);color:var(--ink);border-radius:18px;padding:22px;max-width:380px;width:100%}
+.gate-screen{background:var(--bg);overflow-y:auto;align-items:start}
+.gate-screen .lock-card{max-width:480px;margin:18px auto;box-shadow:var(--shadow)}
+.profile-row{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:9px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.profile-row b{font-size:15px}
+.field-error{color:var(--red);font-size:13px;margin-top:6px;min-height:18px}
+.field-ok{color:var(--green);font-size:13px;margin-top:6px}
+.hidden{display:none!important}
+.foot{margin-top:22px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:150px;margin-top:14px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.bar-col .bar{width:100%;max-width:44px;background:var(--teal);border-radius:7px 7px 3px 3px}
+.bar-col .bar.over{background:var(--red)}
+.bar-col small{font-size:11px;color:var(--muted);text-align:center}
+.bar-col b{font-size:12px}
+@media(max-width:520px){ .hero h1{font-size:23px} .big-num{font-size:38px} .wrap{padding:10px 10px 40px} .role-tabs{width:100%} .role-tabs button{flex:1;padding:8px 6px;font-size:13px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="role-tabs" role="tablist" aria-label="Chọn vai trò">
+      <button type="button" role="tab" id="tab-student" aria-selected="true" onclick="showView('student')">Học sinh</button>
+      <button type="button" role="tab" id="tab-teacher" aria-selected="false" onclick="showView('teacher')">Giáo viên &amp; Phụ huynh</button>
+      <button type="button" role="tab" id="tab-why" aria-selected="false" onclick="showView('why')">Vì sao app này khác?</button>
+    </div>
+    <p class="session-note" id="save-note">Mỗi hồ sơ bắt buộc có mã riêng. Đóng trang là phải nhập mã lại.</p>
+    <button class="btn small hidden" id="switch-user-btn" type="button" onclick="lockProfile()">Khóa / Đổi người dùng</button>
+  </div>
+
+  <header class="hero">
+    <h1>Xem ít hơn không phải vì bị cấm — mà vì mình chủ động chọn.</h1>
+    <p>App này không đếm hộ điện thoại của em, cũng không gửi gì về cho thầy cô. Nó giúp em dừng lại 10 giây trước khi xem, ghi lại vì sao mình mở video, và đổi 15 phút lướt vô thức lấy một việc khác đáng hơn.</p>
+    <div class="hero-actions">
+      <button class="btn btn-white" type="button" onclick="document.getElementById('pause-box').scrollIntoView({behavior:'smooth'})">Tôi sắp xem video → Dừng 10 giây</button>
+      <button class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.6)" type="button" onclick="showView('why')">Đọc đề xuất của chuyên gia</button>
+    </div>
+  </header>
+
+  <div id="demo-banner" class="banner demo hidden">Đang xem <b>dữ liệu mẫu</b> để hiểu cách app hoạt động. Đây không phải số liệu thật của em. Mã riêng của hồ sơ mẫu là <b>1234</b>. <button class="btn small" type="button" onclick="deleteDemoProfile()">Xóa dữ liệu mẫu, quay lại chọn hồ sơ</button></div>
+
+  <!-- ============ STUDENT VIEW ============ -->
+  <main id="view-student">
+    <div class="grid two">
+      <section class="card" aria-labelledby="today-h">
+        <h2 id="today-h">Hôm nay của em</h2>
+        <p class="lead" id="today-date">—</p>
+        <div class="row" style="align-items:flex-end">
+          <div><span class="big-num" id="today-minutes">0</span> <span style="font-weight:700">phút đã ghi</span><br><span class="notice">Giới hạn của em: <b id="limit-label">45 phút</b> · Còn lại: <b id="left-label">45 phút</b></span></div>
+          <div style="flex:0 0 auto"><button class="btn small" type="button" onclick="openProfile()">Đổi giới hạn / hồ sơ</button> <button class="btn small" type="button" onclick="lockProfile()">Khóa / Đổi người dùng</button></div>
+        </div>
+        <div class="meter-wrap"><div class="meter"><div id="meter-fill" style="width:0%"></div></div></div>
+        <div id="today-status" class="status ok">Chưa ghi phút nào hôm nay. Tốt — hãy giữ nhịp này.</div>
+        <div class="kpis">
+          <div class="kpi"><b id="kpi-streak">0 ngày</b><span>Chuỗi ngày trong giới hạn</span></div>
+          <div class="kpi"><b id="kpi-swaps">0</b><span>Lần đổi 15 phút hôm nay</span></div>
+          <div class="kpi"><b id="kpi-late">0</b><span>Lần xem khuya đã ghi</span></div>
+          <div class="kpi"><b id="kpi-avg">—</b><span>Trung bình 7 ngày gần nhất</span></div>
+        </div>
+        <div id="commitment-box" class="banner info hidden"></div>
+      </section>
+
+      <section class="card" id="pause-box" aria-labelledby="pause-h">
+        <h2 id="pause-h">Dừng 10 giây trước khi xem</h2>
+        <p class="lead">Đừng mở video ngay. Trả lời 3 câu này trước — thường chỉ cần vậy là cơn muốn lướt đã qua.</p>
+        <div id="pause-step-1">
+          <div class="timer-box"><div class="time" id="pause-count">10</div><p style="margin:6px 0 0">giây — hít vào, thở ra. Đừng chạm vào ứng dụng video.</p></div>
+          <button class="btn primary" type="button" onclick="startPause()" style="width:100%;margin-top:10px">Bắt đầu 10 giây</button>
+        </div>
+        <div id="pause-step-2" class="hidden">
+          <label>Em mở video vì điều gì nhất lúc này?</label>
+          <div class="chips" id="pause-trigger-chips"></div>
+          <label for="pause-intend">Em định xem bao lâu?</label>
+          <select id="pause-intend"><option value="10">10 phút</option><option value="15" selected>15 phút</option><option value="20">20 phút</option><option value="30">30 phút</option></select>
+          <label>Sau 10 giây, em muốn…</label>
+          <div class="row">
+            <button class="btn warn" type="button" onclick="chooseWatch()">Xem có hẹn giờ</button>
+            <button class="btn primary" type="button" onclick="chooseSwap()">Đổi 15 phút làm việc khác</button>
+          </div>
+          <p class="notice" style="margin-top:10px">Nếu chọn xem, đồng hồ sẽ đếm và nhắc khi hết giờ em đặt. Em vẫn phải tự ghi số phút thật sau khi xem xong.</p>
+        </div>
+        <div id="timer-area" class="hidden">
+          <div class="timer-box"><div class="time" id="timer-display">15:00</div><p id="timer-label" style="margin:6px 0 0">Đang đếm giờ xem</p></div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" type="button" onclick="stopTimer(true)">Dừng &amp; ghi số phút</button>
+            <button class="btn danger" type="button" onclick="stopTimer(false)">Hủy, không ghi</button>
+          </div>
+          <p id="timer-msg" class="notice" style="margin-top:8px"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid two">
+      <section class="card" aria-labelledby="log-h">
+        <h2 id="log-h">Ghi nhanh — ghi thật, không ghi đẹp</h2>
+        <p class="lead">Ghi ngay sau mỗi lần xem. Ghi “vượt giới hạn” cũng là một lần ghi tốt, vì nó cho em thấy điểm nào cần sửa.</p>
+        <form id="log-form">
+          <div class="row">
+            <div><label for="log-minutes">Số phút đã xem *</label><input id="log-minutes" type="number" min="1" max="600" inputmode="numeric" placeholder="Ví dụ: 35" required></div>
+            <div><label for="log-platform">Nền tảng</label><select id="log-platform"><option>TikTok</option><option>YouTube Shorts</option><option>Facebook Reels</option><option>Instagram Reels</option><option>Khác</option></select></div>
+          </div>
+          <label>Khung giờ xem</label>
+          <div class="chips" id="slot-chips"></div>
+          <label>Lý do em mở video</label>
+          <div class="chips" id="trigger-chips"></div>
+          <label>Tâm trạng lúc đó</label>
+          <div class="chips" id="mood-chips"></div>
+          <label for="log-note">Ghi chú ngắn (không bắt buộc)</label>
+          <input id="log-note" type="text" maxlength="120" placeholder="Ví dụ: xem lúc chờ xe buýt">
+          <label style="display:flex;gap:8px;align-items:center;font-weight:500"><input type="checkbox" id="log-stopped" style="width:auto"> Em đã dừng đúng lúc mình định dừng</label>
+          <button class="btn primary" type="submit" style="width:100%;margin-top:12px">Ghi vào hôm nay</button>
+          <p class="notice" id="log-error" style="color:var(--red);margin-top:8px"></p>
+        </form>
+        <p class="notice" style="margin-top:10px">App không tự đo điện thoại. Con số ở đây là do em tự ghi — càng thật thì biểu đồ và cảnh báo càng có ích.</p>
+        <div id="log-list"></div>
+      </section>
+
+      <section class="card" aria-labelledby="swap-h">
+        <h2 id="swap-h">Đổi 15 phút — thay vì cấm, hãy thay thế</h2>
+        <p class="lead">Chọn một việc, làm 15 phút. Mỗi lần đổi được tính vào thử thách và chuỗi ngày của em.</p>
+        <div class="chips" id="swap-chips"></div>
+        <p class="notice" style="margin-top:10px">Bấm một việc để bắt đầu hẹn giờ 15 phút. Hết giờ, bấm “Đã đổi xong” để ghi nhận.</p>
+        <div id="swap-timer-area" class="hidden">
+          <div class="timer-box"><div class="time" id="swap-display">15:00</div><p style="margin:6px 0 0" id="swap-label">Đang đổi 15 phút</p></div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn primary" type="button" onclick="finishSwap()">Đã đổi xong — ghi nhận</button>
+            <button class="btn danger" type="button" onclick="cancelSwap()">Hủy</button>
+          </div>
+        </div>
+        <div id="swap-list"></div>
+      </section>
+    </div>
+
+    <div class="grid two">
+      <section class="card" aria-labelledby="chart-h">
+        <h2 id="chart-h">7 ngày gần nhất — nhìn xu hướng, đừng nhìn một ngày</h2>
+        <p class="lead">Một ngày vượt giới hạn không có nghĩa là thất bại. Xu hướng giảm dần trong 7 ngày mới là tiến bộ.</p>
+        <div class="bar-chart" id="bar-chart"></div>
+        <div id="insight-box"></div>
+      </section>
+
+      <section class="card" aria-labelledby="challenge-h">
+        <h2 id="challenge-h">Thử thách 7 ngày</h2>
+        <p class="lead">Chọn một thử thách nhỏ, làm được mỗi ngày. Đừng chọn cái khó nhất — chọn cái em làm được 7 ngày liền.</p>
+        <label for="challenge-select">Thử thách của em</label>
+        <select id="challenge-select">
+          <option value="less10">Giảm 10 phút mỗi ngày so với hôm qua</option>
+          <option value="nolatenight">Không xem sau giờ đi ngủ đã đặt</option>
+          <option value="oneswap">Mỗi ngày 1 lần đổi 15 phút</option>
+          <option value="pause">Dừng 10 giây trước mỗi lần xem</option>
+        </select>
+        <button class="btn primary" type="button" onclick="startChallenge()" style="margin-top:10px">Bắt đầu thử thách từ hôm nay</button>
+        <div id="challenge-box"></div>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="reflect-h">
+      <h2 id="reflect-h">Nhìn lại buổi tối — 2 phút, trước giờ đi ngủ</h2>
+      <p class="lead">Đừng để đến cuối tuần mới nhớ. Viết 3 dòng tối nay, sáng mai em đã có một cam kết rõ ràng.</p>
+      <form id="reflect-form">
+        <div class="row">
+          <div><label for="ref-trigger">Hôm nay điều gì khiến em mở video nhiều nhất?</label><input id="ref-trigger" type="text" maxlength="120" placeholder="Ví dụ: buồn chán sau giờ học"></div>
+          <div><label for="ref-worked">Điều gì đã giúp em dừng lại hôm nay?</label><input id="ref-worked" type="text" maxlength="120" placeholder="Ví dụ: hẹn giờ 15 phút"></div>
+        </div>
+        <label for="ref-commit">Ngày mai, em cam kết một việc duy nhất:</label>
+        <input id="ref-commit" type="text" maxlength="140" placeholder="Ví dụ: không mở TikTok sau 21:30" required>
+        <button class="btn primary" type="submit" style="margin-top:12px">Lưu nhìn lại hôm nay</button>
+      </form>
+      <div id="reflect-list"></div>
+    </section>
+
+    <section class="card" aria-labelledby="share-h">
+      <h2 id="share-h">Gửi báo cáo — chỉ khi em muốn, chỉ những gì em chọn</h2>
+      <p class="lead">Không có gì tự động gửi đi. Em tạo mã báo cáo, tự tay gửi cho thầy cô hoặc phụ huynh. Người nhận chỉ thấy đúng những gì có trong mã đó.</p>
+      <div class="row">
+        <div><label for="report-email">Email người nhận (để soạn mail)</label><input id="report-email" type="email" placeholder="Ví dụ: thayco@truong.edu.vn"></div>
+        <div style="flex:0 0 auto;align-self:end"><button class="btn" type="button" onclick="makeReportCode()">Tạo mã báo cáo</button></div>
+      </div>
+      <label for="report-code">Mã báo cáo của em</label>
+      <textarea id="report-code" readonly placeholder="Bấm “Tạo mã báo cáo” — mã sẽ hiện ở đây. Em chép mã này gửi cho thầy cô / phụ huynh."></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" type="button" onclick="copyCode()">Chép mã</button>
+        <button class="btn" type="button" onclick="sendMail()">Soạn mail gửi báo cáo</button>
+        <button class="btn" type="button" onclick="downloadJSON()">Tải file dữ liệu (.json)</button>
+        <button class="btn" type="button" onclick="document.getElementById('import-file').click()">Nhập file đã xuất</button>
+        <input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)">
+      </div>
+      <p class="notice" style="margin-top:10px" id="share-status"></p>
+      <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+      <div class="row">
+        <button class="btn small" type="button" onclick="loadDemo()">Xem thử với dữ liệu mẫu</button>
+        <button class="btn small" type="button" onclick="setupLock()">Đổi mã riêng</button>
+        <button class="btn small" type="button" onclick="lockProfile()">Khóa hồ sơ / Đổi người dùng</button>
+        <button class="btn small danger" type="button" onclick="openProfile(true)">Xóa hồ sơ đang mở…</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ TEACHER VIEW ============ -->
+  <main id="view-teacher" class="hidden">
+    <section class="card">
+      <h2>Bảng tổng hợp từ mã báo cáo học sinh gửi</h2>
+      <p class="lead">Thầy cô / phụ huynh không xem trực tiếp máy của học sinh. Mỗi em tự gửi mã báo cáo; thầy cô dán các mã vào đây để xem tổng hợp của những em đã gửi. Em nào chưa gửi thì hiện là “chưa có báo cáo”, không tính là vi phạm.</p>
+      <label for="teacher-codes">Dán mã báo cáo của học sinh (mỗi mã một dòng)</label>
+      <textarea id="teacher-codes" rows="5" placeholder="Dán mã báo cáo em gửi vào đây…"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" type="button" onclick="aggregateReports()">Xem tổng hợp</button>
+        <button class="btn" type="button" onclick="downloadCSV()">Tải bảng tổng hợp (.csv)</button>
+      </div>
+      <div id="teacher-result"></div>
+    </section>
+
+    <div class="grid half">
+      <section class="card">
+        <h2>Ngưỡng chung của lớp</h2>
+        <p class="lead">Đặt một ngưỡng để cả lớp cùng hướng tới. Ngưỡng này chỉ dùng để tổng hợp mã báo cáo, không khóa máy của học sinh.</p>
+        <label for="class-limit">Giới hạn tham khảo mỗi ngày (phút)</label>
+        <input id="class-limit" type="number" min="10" max="240" value="45">
+        <label for="class-bedtime">Giờ không xem sau (giờ đi ngủ)</label>
+        <input id="class-bedtime" type="time" value="22:00">
+        <button class="btn" type="button" onclick="applyClassSettings()" style="margin-top:10px">Áp dụng cho bảng tổng hợp</button>
+        <p class="notice" id="class-status" style="margin-top:8px"></p>
+      </section>
+      <section class="card">
+        <h2>5 câu hỏi để nói chuyện, không phải để tra hỏi</h2>
+        <p class="lead">Dùng khi một em vượt ngưỡng nhiều ngày. Mục tiêu là tìm ra “điểm gãy” và cùng em sửa một việc nhỏ.</p>
+        <ol style="margin:0;padding-left:20px">
+          <li>“Lúc nào em hay mở video nhất — buồn chán, căng thẳng, hay lúc chờ đợi?”</li>
+          <li>“Việc thay thế nào em thấy làm được, không thấy gượng ép?”</li>
+          <li>“Giờ nào trong ngày là khó dừng nhất với em?”</li>
+          <li>“Tuần này em muốn giảm bao nhiêu phút — 5 hay 10 phút là đủ?”</li>
+          <li>“Thầy / bố mẹ có thể giúp gì — nhắc giờ, hay cùng em đặt giờ đi ngủ?”</li>
+        </ol>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Hướng dẫn gửi mã cho cả lớp (2 phút)</h2>
+      <ol style="margin:0;padding-left:20px">
+        <li>Mỗi học sinh mở app trên điện thoại của mình, tạo đúng 1 hồ sơ bằng tên thật và <b>mã riêng bắt buộc 4–6 chữ số</b> — không có mã thì không tạo và không mở được hồ sơ. Hai em trùng tên vẫn phân biệt được nhờ mã riêng.</li>
+        <li>Học sinh ghi số phút thật trong ngày, nhập mã riêng mỗi lần mở lại app trên cùng điện thoại đó.</li>
+        <li>Cuối ngày, em bấm <b>Tạo mã báo cáo</b> rồi chép mã gửi cho thầy cô qua nhóm lớp.</li>
+        <li>Thầy cô dán các mã vào ô trên và bấm <b>Xem tổng hợp</b>. Không cần tài khoản, không cần kết nối Drive hay máy chủ.</li>
+      </ol>
+      <p class="notice">Nếu nhà trường muốn dữ liệu tự động về một bảng chung mà không cần học sinh gửi mã, cần một hệ thống có máy chủ và tài khoản riêng — app tĩnh này không làm được điều đó một cách an toàn, và không nên giả vờ là làm được.</p>
+    </section>
+  </main>
+
+  <!-- ============ WHY VIEW ============ -->
+  <main id="view-why" class="hidden">
+    <section class="card">
+      <h2>Đề xuất của chuyên gia: quản lý video ngắn phải đổi hành vi, không phải chỉ đếm phút</h2>
+      <p class="lead">Các app chỉ ghi “hôm nay xem bao nhiêu phút” rồi xếp mức cảnh báo thường thất bại vì 3 lý do: học sinh không nhìn thấy cảnh báo vào đúng lúc đang muốn xem; số liệu tự ghi dễ bị ghi đẹp; và cấm mà không có việc thay thế thì cơn muốn xem quay lại ngay. App mới này được xây quanh 4 cơ chế khác:</p>
+      <div class="grid two" style="margin-top:6px">
+        <div class="card principle"><p class="num">01 · DỪNG TRƯỚC KHI XEM</p><h3>10 giây tạo khoảng lặng</h3><p style="margin:0">Cơn muốn lướt mạnh nhất trong vài giây đầu. Một lần dừng có chủ đích, kèm câu hỏi “vì sao mình mở?”, làm giảm khả năng mở video theo thói quen.</p></div>
+        <div class="card principle"><p class="num">02 · NHÌN THẤY MẪU HÌNH</p><h3>Ghi lý do, không chỉ ghi phút</h3><p style="margin:0">Biết mình xem nhiều lúc buồn chán hay lúc khuya mới sửa được đúng chỗ. App tổng hợp lý do, khung giờ và nền tảng hay gặp nhất của chính em đó.</p></div>
+        <div class="card principle"><p class="num">03 · THAY THẾ, KHÔNG CHỈ CẤM</p><h3>Đổi 15 phút lấy việc khác</h3><p style="margin:0">Mỗi lần đổi được ghi nhận như một chiến thắng nhỏ. Học sinh chọn việc mình thích — đọc, vận động, nghe nhạc — thay vì nhận một danh sách cấm chung.</p></div>
+        <div class="card principle"><p class="num">04 · THẮNG NHỎ, ĐỀU ĐẶN</p><h3>Thử thách 7 ngày và nhìn lại buổi tối</h3><p style="margin:0">Mục tiêu nhỏ làm được 7 ngày liền có giá trị hơn mục tiêu lớn bỏ sau 2 ngày. Nhìn lại buổi tối biến một ngày vượt giới hạn thành bài học, không phải điểm trừ.</p></div>
+      </div>
+    </section>
+
+    <div class="grid half">
+      <section class="card">
+        <h2>App này làm được gì — và không làm được gì</h2>
+        <table>
+          <tr><th>Làm được</th><th>Không làm được</th></tr>
+          <tr><td>Dừng 10 giây, hẹn giờ xem, ghi nhanh có lý do và tâm trạng</td><td>Tự đo thời gian xem trên điện thoại học sinh</td></tr>
+          <tr><td>Đổi 15 phút, thử thách 7 ngày, chuỗi ngày trong giới hạn</td><td>Chặn TikTok / YouTube, khóa ứng dụng</td></tr>
+          <tr><td>Mã báo cáo do học sinh tự gửi; tổng hợp cho giáo viên</td><td>Tự động gửi dữ liệu về máy thầy cô khi chưa có mã</td></tr>
+          <tr><td>Lưu trên trình duyệt này, còn lại khi đóng/mở lại; xuất / nhập file để giữ dữ liệu qua các ngày và chuyển máy</td><td>Đồng bộ sang máy khác nếu chưa xuất / nhập file</td></tr>
+          <tr><td>Mỗi hồ sơ bắt buộc có mã riêng 4–6 chữ số mới mở được</td><td>Xác minh tuyệt đối em nào là em nào trên mọi máy — mã riêng chỉ khóa hồ sơ trên thiết bị này, không phải tài khoản đăng nhập</td></tr>
+        </table>
+        <p class="notice" style="margin-top:10px">Muốn chặn thật trên máy của em, phụ huynh cần dùng Digital Wellbeing (Android) hoặc Screen Time (iPhone) trên chính điện thoại đó, đặt giới hạn ứng dụng và giờ đi ngủ. App này là phần “tự quản” đi kèm, không thay thế phần đó.</p>
+      </section>
+      <section class="card">
+        <h2>Cách bắt đầu trong 1 tuần</h2>
+        <ol style="margin:0;padding-left:20px">
+          <li><b>Ngày 1:</b> Mỗi em tạo đúng 1 hồ sơ với tên thật và mã riêng bắt buộc (4–6 chữ số, chỉ em biết), đặt giới hạn của riêng mình (gợi ý bắt đầu: 45 phút) và giờ không xem sau.</li>
+          <li><b>Ngày 1–3:</b> Chỉ ghi thật, chưa cần giảm. Mục tiêu là thấy được mẫu hình của mình.</li>
+          <li><b>Ngày 4:</b> Chọn 1 thử thách 7 ngày và 1 việc thay thế yêu thích.</li>
+          <li><b>Cuối tuần:</b> Gửi mã báo cáo, cùng nhìn xu hướng 7 ngày và chọn 1 việc sửa cho tuần sau.</li>
+        </ol>
+        <details><summary>Nếu học sinh ghi không thật thì sao?</summary><p style="margin:8px 0 0">Đừng dùng app để chấm điểm hay phạt. Khi số liệu không còn hậu quả, học sinh mới dám ghi thật. Nếu một em ghi 0 phút nhiều ngày liền trong khi thầy cô thấy dấu hiệu ngược lại, hãy hỏi bằng 5 câu hỏi ở chế độ Giáo viên, đừng đối chiếu số liệu như bằng chứng.</p></details>
+      </section>
+    </div>
+    <button class="btn primary" type="button" onclick="showView('student')" style="margin-top:14px">Bắt đầu với chế độ Học sinh →</button>
+  </main>
+
+  <footer class="foot">
+    <p><b>Giới hạn cần biết rõ:</b> Số phút là do học sinh tự ghi — app không tự đo điện thoại. Mỗi hồ sơ bắt buộc có mã riêng 4–6 chữ số mới mở được; mã chỉ khóa hồ sơ trên đúng trình duyệt và thiết bị này (lưu dạng mã băm, không phải tài khoản đăng nhập), quên mã thì không khôi phục được mà chỉ xóa hồ sơ đó và tạo lại. Dữ liệu lưu trên đúng trình duyệt và thiết bị này và còn lại khi đóng/mở lại; đổi máy, đổi trình duyệt hoặc xóa dữ liệu trình duyệt thì mất nếu chưa xuất file .json, nên hãy xuất file định kỳ. Trên máy dùng chung, khóa hồ sơ sau khi dùng xong.</p>
+  </footer>
+</div>
+
+<div class="lock-screen gate-screen open" id="gate-screen" role="dialog" aria-modal="true" aria-label="Chọn hồ sơ">
+  <div class="lock-card">
+    <h2 style="margin-top:0">Mở hồ sơ của em</h2>
+    <p class="lead">Mỗi học sinh có một hồ sơ riêng, mở bằng <b>mã riêng bắt buộc 4–6 chữ số</b>. Không nhập đúng mã thì không xem và không ghi được vào hồ sơ đó — kể cả trên cùng một máy. Hai em trùng tên vẫn phân biệt được nhờ mã riêng.</p>
+    <div id="gate-profiles"></div>
+    <div id="gate-unlock" class="hidden">
+      <p style="margin:12px 0 0"><b id="gate-unlock-name"></b></p>
+      <label for="gate-pin">Mã riêng của em</label>
+      <input id="gate-pin" type="password" inputmode="numeric" maxlength="6" placeholder="4–6 chữ số" autocomplete="off">
+      <p class="field-error" id="gate-error"></p>
+      <div class="row">
+        <button class="btn primary" type="button" onclick="submitGateCode()">Mở hồ sơ</button>
+        <button class="btn" type="button" onclick="cancelGateUnlock()">Quay lại</button>
+      </div>
+      <button class="btn ghost small" type="button" onclick="forgetGateProfile()">Quên mã? Xóa hồ sơ này và bắt đầu lại</button>
+      <p class="notice" id="gate-forget-note"></p>
+    </div>
+    <div id="gate-setcode" class="hidden">
+      <p style="margin:12px 0 0"><b id="gate-setcode-name"></b> — hồ sơ này được tạo trước khi có mã riêng bắt buộc. Đặt mã riêng ngay để tiếp tục; dữ liệu cũ chỉ hiện sau khi em đặt mã.</p>
+      <label for="gate-new-pin">Mã riêng mới (4–6 chữ số) *</label>
+      <input id="gate-new-pin" type="password" inputmode="numeric" maxlength="6" placeholder="Ví dụ: 4826" autocomplete="off">
+      <label for="gate-new-pin2">Nhập lại mã riêng *</label>
+      <input id="gate-new-pin2" type="password" inputmode="numeric" maxlength="6" placeholder="Nhập lại đúng mã trên" autocomplete="off">
+      <p class="field-error" id="gate-setcode-error"></p>
+      <div class="row">
+        <button class="btn primary" type="button" onclick="submitGateSetCode()">Đặt mã và mở hồ sơ</button>
+        <button class="btn" type="button" onclick="cancelGateUnlock()">Quay lại</button>
+      </div>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <h3 style="margin:0 0 4px">Tạo hồ sơ mới</h3>
+    <p class="lead">Chỉ tạo đúng 1 hồ sơ cho mình. Ghi tên thật để thầy cô nhận ra khi em gửi mã báo cáo.</p>
+    <form id="gate-create-form">
+      <label for="gc-name">Tên thật của em *</label>
+      <input id="gc-name" type="text" maxlength="40" placeholder="Ví dụ: Minh Anh" required>
+      <label for="gc-class">Lớp</label>
+      <input id="gc-class" type="text" maxlength="20" placeholder="Ví dụ: 12A3">
+      <div class="row">
+        <div><label for="gc-limit">Giới hạn mỗi ngày (phút)</label><input id="gc-limit" type="number" min="10" max="240" value="45" required></div>
+        <div><label for="gc-bedtime">Sau giờ này thì không xem</label><input id="gc-bedtime" type="time" value="22:00" required></div>
+      </div>
+      <label for="gc-pin">Mã riêng (bắt buộc, 4–6 chữ số) *</label>
+      <input id="gc-pin" type="password" inputmode="numeric" maxlength="6" placeholder="Chỉ em biết mã này" autocomplete="off" required>
+      <label for="gc-pin2">Nhập lại mã riêng *</label>
+      <input id="gc-pin2" type="password" inputmode="numeric" maxlength="6" placeholder="Nhập lại đúng mã trên" autocomplete="off" required>
+      <p class="field-error" id="gc-error"></p>
+      <p class="field-ok hidden" id="gc-dup"></p>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:6px">Tạo hồ sơ và mở</button>
+    </form>
+    <p class="notice" style="margin-top:12px">Mã riêng được lưu dạng mã băm chỉ trên thiết bị này, không phải tài khoản đăng nhập. Ai biết mã vẫn mở được hồ sơ; quên mã thì không khôi phục được, chỉ xóa hồ sơ đó và tạo lại từ đầu.</p>
+    <button class="btn ghost small" type="button" onclick="showView('teacher')">Tôi là giáo viên / phụ huynh — vào bảng tổng hợp mã báo cáo (không cần mã học sinh)</button>
+    <button class="btn small danger" type="button" onclick="wipeAllProfiles()">Xóa tất cả hồ sơ trên thiết bị này…</button>
+    <p class="notice" id="wipe-note"></p>
+  </div>
+</div>
+
+<div class="lock-screen" id="profile-screen" role="dialog" aria-modal="true" aria-label="Hồ sơ và giới hạn">
+  <div class="lock-card" style="max-width:440px">
+    <h2 style="margin-top:0">Hồ sơ &amp; giới hạn của em</h2>
+    <p class="lead">Mã riêng là bắt buộc và không được để trống: hồ sơ luôn phải có mã mới mở được. Đổi mã phải nhập đúng mã hiện tại.</p>
+    <form id="profile-form">
+      <label for="pf-name">Tên thật *</label>
+      <input id="pf-name" type="text" maxlength="40" placeholder="Ví dụ: Minh Anh" required>
+      <label for="pf-class">Lớp</label>
+      <input id="pf-class" type="text" maxlength="20" placeholder="Ví dụ: 12A3">
+      <label for="pf-limit">Giới hạn video ngắn mỗi ngày (phút)</label>
+      <input id="pf-limit" type="number" min="10" max="240" value="45" required>
+      <label for="pf-bedtime">Sau giờ này thì không xem</label>
+      <input id="pf-bedtime" type="time" value="22:00" required>
+      <label for="pf-current">Mã riêng hiện tại *</label>
+      <input id="pf-current" type="password" inputmode="numeric" maxlength="6" placeholder="Nhập mã hiện tại để lưu thay đổi" autocomplete="off" required>
+      <label for="pf-pin">Mã riêng mới (để trống nếu giữ mã cũ)</label>
+      <input id="pf-pin" type="password" inputmode="numeric" maxlength="6" placeholder="4–6 chữ số" autocomplete="off">
+      <label for="pf-pin2">Nhập lại mã riêng mới</label>
+      <input id="pf-pin2" type="password" inputmode="numeric" maxlength="6" placeholder="Nhập lại đúng mã mới" autocomplete="off">
+      <p class="field-error" id="pf-error"></p>
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary" type="submit">Lưu hồ sơ</button>
+        <button class="btn" type="button" onclick="closeProfile()">Đóng</button>
+      </div>
+    </form>
+    <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+    <div id="pf-delete-area" class="hidden">
+      <h3 style="margin:0 0 4px">Xóa hồ sơ đang mở</h3>
+      <p class="lead">Xóa vĩnh viễn nhật ký, lần đổi và nhìn lại của hồ sơ này trên thiết bị này. Hồ sơ khác không bị ảnh hưởng. Không khôi phục được.</p>
+      <label for="pf-delete-pin">Nhập mã riêng để xác nhận xóa</label>
+      <input id="pf-delete-pin" type="password" inputmode="numeric" maxlength="6" placeholder="Mã riêng của hồ sơ này" autocomplete="off">
+      <p class="field-error" id="pf-delete-error"></p>
+      <button class="btn danger" type="button" onclick="deleteCurrentProfile()">Xóa vĩnh viễn hồ sơ này</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var TRIGGERS=["Buồn chán","Căng thẳng / mệt","Thói quen, tay tự mở","Bạn bè gửi link","Chờ đợi / rảnh tay","Khó ngủ"];
+var MOODS=["Vui","Bình thường","Mệt","Buồn","Lo lắng","Hào hứng"];
+var SLOTS=["Sáng","Trưa","Chiều","Tối","Sau giờ đi ngủ"];
+var SWAPS=["Đọc 15 phút","Đi bộ / vận động","Nghe 3 bài nhạc","Vẽ / viết nhật ký","Dọn bàn học","Gọi điện cho bạn"];
+function blankRecord(){return {profile:{name:"",className:"",limit:45,bedtime:"22:00",pinHash:""},logs:[],swaps:[],reflections:[],challenge:null,demo:false}}
+var store={profiles:[],activeId:null};
+var state=blankRecord();
+var unlocked=false;
+var gateSelectedId=null;
+var pendingForgetId=null;
+var pendingWipe=false;
+var STORE_KEY="qvn-hieu-qua-v1";
+function hashPin(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0}return "h"+(h>>>0).toString(36)}
+function validPin(s){return /^\d{4,6}$/.test(s)}
+function newId(){return "p"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36)}
+function findProfile(id){for(var i=0;i<store.profiles.length;i++){if(store.profiles[i].id===id)return store.profiles[i]}return null}
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify({v:2,profiles:store.profiles,activeId:store.activeId}))}catch(e){}}
+function loadState(){
+  try{var raw=localStorage.getItem(STORE_KEY);if(!raw)return;var o=JSON.parse(raw);if(!o)return;
+    if(o.v===2&&Array.isArray(o.profiles)){store.profiles=o.profiles;store.activeId=o.activeId||null;
+      store.profiles.forEach(function(p){p.id=p.id||newId();p.profile=p.profile||{name:"",className:"",limit:45,bedtime:"22:00",pinHash:""};p.logs=p.logs||[];p.swaps=p.swaps||[];p.reflections=p.reflections||[];});
+      return}
+    if(o.data){var d=o.data;var rec=blankRecord();
+      if(d.profile){rec.profile.name=d.profile.name||"";rec.profile.className=d.profile.className||"";rec.profile.limit=d.profile.limit||45;rec.profile.bedtime=d.profile.bedtime||"22:00";rec.profile.pinHash=d.profile.pinHash||(d.profile.pin?hashPin(String(d.profile.pin)):"")}
+      if(Array.isArray(d.logs))rec.logs=d.logs; if(Array.isArray(d.swaps))rec.swaps=d.swaps; if(Array.isArray(d.reflections))rec.reflections=d.reflections;
+      rec.challenge=d.challenge||null; rec.demo=!!d.demo; rec.id=newId(); rec.createdAt=Date.now();
+      store.profiles=[rec]; store.activeId=rec.id; saveState();}
+  }catch(e){}
+}
+function profileDays(p){var days={};p.logs.forEach(function(l){days[l.date]=1});p.swaps.forEach(function(s){days[s.date]=1});return Object.keys(days).length}
+var classLimit=45, classBedtime="22:00";
+var selected={slot:"Tối",trigger:"Buồn chán",mood:"Bình thường",swap:SWAPS[0],pauseTrigger:"Buồn chán"};
+var timer=null, timerEnd=0, timerMode="", timerMinutes=0, pauseTimer=null;
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function dateStr(d){var y=d.getFullYear(),m=("0"+(d.getMonth()+1)).slice(-2),da=("0"+d.getDate()).slice(-2);return y+"-"+m+"-"+da}
+function todayStr(){return dateStr(new Date())}
+function dayLabel(ds){var d=new Date(ds+"T12:00:00");var days=["CN","T2","T3","T4","T5","T6","T7"];return days[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)}
+function fmtDateVN(ds){return ds.split("-").reverse().join("/")}
+function minutesOn(ds){return state.logs.filter(function(l){return l.date===ds}).reduce(function(a,l){return a+Number(l.minutes||0)},0)}
+function swapsOn(ds){return state.swaps.filter(function(s){return s.date===ds}).length}
+function lateOn(ds){return state.logs.filter(function(l){return l.date===ds && l.slot==="Sau giờ đi ngủ"}).length}
+
+function showView(v){
+  ["student","teacher","why"].forEach(function(k){
+    $("view-"+k).classList.toggle("hidden",k!==v);
+    $("tab-"+k).setAttribute("aria-selected",k===v?"true":"false");
+  });
+  // Student data stays behind the code gate; teacher/why views hold no
+  // student data, so they stay reachable without a student's code.
+  if(v==="student" && !unlocked){ showGate(); }
+  else if(v!=="student"){ $("gate-screen").classList.remove("open"); }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+/* ---- Gate: mandatory personal code per student ---- */
+function renderGate(){
+  var el=$("gate-profiles"); pendingWipe=false; $("wipe-note").textContent="";
+  if(!store.profiles.length){
+    el.innerHTML='<div class="empty">Chưa có hồ sơ nào trên thiết bị này. Tạo hồ sơ đầu tiên bên dưới — bắt buộc có mã riêng.</div>';
+  } else {
+    el.innerHTML='<p class="lead" style="margin:6px 0 0">Chọn đúng tên của em, rồi nhập mã riêng:</p>'+store.profiles.map(function(p,i){
+      return '<div class="profile-row"><div><b>'+esc(p.profile.name||"(chưa đặt tên)")+'</b>'+(p.profile.className?' · '+esc(p.profile.className):"")+' · Hồ sơ #'+(i+1)+'<br><span class="notice">'+profileDays(p)+' ngày có dữ liệu'+(p.demo?' · dữ liệu mẫu':"")+(p.profile.pinHash?"":' · <b style="color:var(--red)">chưa có mã riêng</b>')+'</span></div><button class="btn small primary" type="button" onclick="selectGateProfile(\''+p.id+'\')">Mở hồ sơ</button></div>';
+    }).join("");
+  }
+  $("gate-unlock").classList.add("hidden"); $("gate-setcode").classList.add("hidden");
+  $("gate-error").textContent=""; $("gate-forget-note").textContent=""; pendingForgetId=null;
+}
+function showGate(){ unlocked=false; gateSelectedId=null; $("switch-user-btn").classList.add("hidden"); renderGate(); $("gate-screen").classList.add("open"); $("gate-screen").scrollTop=0; }
+function selectGateProfile(id){
+  var p=findProfile(id); if(!p) return; gateSelectedId=id; pendingForgetId=null; $("gate-forget-note").textContent="";
+  if(!p.profile.pinHash){
+    $("gate-unlock").classList.add("hidden"); $("gate-setcode").classList.remove("hidden");
+    $("gate-setcode-name").textContent=(p.profile.name||"Hồ sơ")+(p.profile.className?" · "+p.profile.className:"");
+    $("gate-new-pin").value=""; $("gate-new-pin2").value=""; $("gate-setcode-error").textContent="";
+    $("gate-new-pin").focus(); return;
+  }
+  $("gate-setcode").classList.add("hidden"); $("gate-unlock").classList.remove("hidden");
+  $("gate-unlock-name").textContent=(p.profile.name||"Hồ sơ")+(p.profile.className?" · "+p.profile.className:"");
+  $("gate-pin").value=""; $("gate-error").textContent=""; $("gate-pin").focus();
+}
+function cancelGateUnlock(){ gateSelectedId=null; renderGate(); }
+function unlockRecord(rec){
+  state=rec; store.activeId=rec.id; unlocked=true;
+  $("gate-screen").classList.remove("open"); $("switch-user-btn").classList.remove("hidden");
+  $("save-note").textContent="Đang mở hồ sơ: "+(rec.profile.name||"")+(rec.profile.className?" · "+rec.profile.className:"")+" — khóa hồ sơ sau khi dùng xong.";
+  buildChips(); renderAll(); saveState();
+}
+function submitGateCode(){
+  var p=findProfile(gateSelectedId); if(!p) return;
+  if(hashPin($("gate-pin").value.trim())===p.profile.pinHash){ unlockRecord(p); }
+  else $("gate-error").textContent="Mã chưa đúng. Kiểm tra lại — mã chỉ có 4–6 chữ số và chỉ em biết.";
+}
+function submitGateSetCode(){
+  var p=findProfile(gateSelectedId); if(!p) return;
+  var a=$("gate-new-pin").value.trim(), b=$("gate-new-pin2").value.trim();
+  if(!validPin(a)){ $("gate-setcode-error").textContent="Mã riêng phải là 4–6 chữ số."; return }
+  if(a!==b){ $("gate-setcode-error").textContent="Hai lần nhập mã chưa giống nhau."; return }
+  p.profile.pinHash=hashPin(a); unlockRecord(p);
+}
+function forgetGateProfile(){
+  var p=findProfile(gateSelectedId); if(!p) return;
+  if(pendingForgetId!==p.id){ pendingForgetId=p.id; $("gate-forget-note").textContent="Bấm lại một lần nữa để xóa vĩnh viễn hồ sơ này (toàn bộ nhật ký sẽ mất, không khôi phục được). Nếu em nhớ ra mã, hãy nhập mã ở trên thay vì xóa."; return }
+  store.profiles=store.profiles.filter(function(x){return x.id!==p.id});
+  if(store.activeId===p.id) store.activeId=null;
+  saveState(); showGate();
+}
+function wipeAllProfiles(){
+  if(!pendingWipe){ pendingWipe=true; $("wipe-note").textContent="Bấm lại một lần nữa để xóa vĩnh viễn TẤT CẢ hồ sơ trên thiết bị này. Hành động này không khôi phục được."; return }
+  store={profiles:[],activeId:null}; state=blankRecord(); pendingWipe=false;
+  try{localStorage.removeItem(STORE_KEY)}catch(e){}
+  $("wipe-note").textContent=""; showGate();
+}
+$("gate-create-form").addEventListener("submit",function(e){e.preventDefault();
+  var name=$("gc-name").value.trim();
+  var pin=$("gc-pin").value.trim(), pin2=$("gc-pin2").value.trim();
+  var err=$("gc-error"); err.textContent=""; $("gc-dup").classList.add("hidden");
+  if(!name){err.textContent="Nhập tên thật của em để phân biệt với bạn khác."; $("gc-name").focus(); return}
+  if(!validPin(pin)){err.textContent="Mã riêng là bắt buộc: phải là 4–6 chữ số. Không có mã thì không tạo được hồ sơ."; $("gc-pin").focus(); return}
+  if(pin!==pin2){err.textContent="Hai lần nhập mã chưa giống nhau. Nhập lại cả hai ô."; return}
+  var dup=store.profiles.some(function(p){return p.profile.name.toLowerCase()===name.toLowerCase() && (p.profile.className||"").toLowerCase()===($("gc-class").value.trim().toLowerCase())});
+  if(dup){var dw=$("gc-dup"); dw.classList.remove("hidden"); dw.textContent="Đã có hồ sơ cùng tên và lớp — có thể em trùng tên với bạn. Hai hồ sơ chỉ phân biệt được bằng mã riêng, nên tuyệt đối không dùng chung mã với bạn.";}
+  var rec=blankRecord(); rec.id=newId(); rec.createdAt=Date.now();
+  rec.profile={name:name,className:$("gc-class").value.trim(),limit:Math.max(10,Math.min(240,Number($("gc-limit").value)||45)),bedtime:$("gc-bedtime").value||"22:00",pinHash:hashPin(pin)};
+  store.profiles.push(rec); saveState();
+  $("gc-name").value=""; $("gc-class").value=""; $("gc-pin").value=""; $("gc-pin2").value="";
+  unlockRecord(rec);
+});
+$("gate-pin") && $("gate-pin").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();submitGateCode()}});
+function openProfile(showDelete){
+  if(!unlocked) return;
+  $("pf-name").value=state.profile.name; $("pf-class").value=state.profile.className;
+  $("pf-limit").value=state.profile.limit; $("pf-bedtime").value=state.profile.bedtime;
+  $("pf-current").value=""; $("pf-pin").value=""; $("pf-pin2").value=""; $("pf-error").textContent="";
+  $("pf-delete-pin").value=""; $("pf-delete-error").textContent="";
+  $("pf-delete-area").classList.toggle("hidden",!showDelete);
+  $("profile-screen").classList.add("open");
+}
+function closeProfile(){$("profile-screen").classList.remove("open")}
+$("profile-form").addEventListener("submit",function(e){e.preventDefault();
+  var err=$("pf-error"); err.textContent="";
+  if(hashPin($("pf-current").value.trim())!==state.profile.pinHash){err.textContent="Mã riêng hiện tại chưa đúng. Không lưu được thay đổi."; return}
+  var name=$("pf-name").value.trim(); if(!name){err.textContent="Tên không được để trống."; return}
+  var np=$("pf-pin").value.trim(), np2=$("pf-pin2").value.trim();
+  if(np||np2){
+    if(!validPin(np)){err.textContent="Mã riêng mới phải là 4–6 chữ số. Để trống nếu giữ mã cũ."; return}
+    if(np!==np2){err.textContent="Hai lần nhập mã mới chưa giống nhau."; return}
+  }
+  state.profile.name=name; state.profile.className=$("pf-class").value.trim();
+  state.profile.limit=Math.max(10,Math.min(240,Number($("pf-limit").value)||45));
+  state.profile.bedtime=$("pf-bedtime").value||"22:00";
+  if(np) state.profile.pinHash=hashPin(np);
+  closeProfile(); renderAll();
+});
+function deleteCurrentProfile(){
+  if(hashPin($("pf-delete-pin").value.trim())!==state.profile.pinHash){$("pf-delete-error").textContent="Mã chưa đúng — không xóa được."; return}
+  store.profiles=store.profiles.filter(function(p){return p.id!==state.id});
+  store.activeId=null; saveState(); closeProfile(); showGate();
+}
+function setupLock(){ openProfile(false); }
+function lockProfile(){ saveState(); showGate(); }
+function deleteDemoProfile(){
+  store.profiles=store.profiles.filter(function(p){return !p.demo});
+  if(state.demo){ state=blankRecord(); }
+  store.activeId=null; saveState(); showGate();
+}
+
+function chipGroup(elId, items, key, onPick){
+  var el=$(elId); el.innerHTML="";
+  items.forEach(function(it){
+    var b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=it;
+    b.setAttribute("aria-pressed", selected[key]===it?"true":"false");
+    b.onclick=function(){selected[key]=it; onPick&&onPick(it); chipGroup(elId,items,key,onPick)};
+    el.appendChild(b);
+  });
+}
+function buildChips(){
+  chipGroup("slot-chips",SLOTS,"slot"); chipGroup("trigger-chips",TRIGGERS,"trigger"); chipGroup("mood-chips",MOODS,"mood");
+  chipGroup("pause-trigger-chips",TRIGGERS,"pauseTrigger");
+  chipGroup("swap-chips",SWAPS,"swap",function(it){$("swap-label").textContent="Đang đổi 15 phút: "+it});
+}
+
+function startPause(){
+  var n=10; $("pause-count").textContent=n;
+  clearInterval(pauseTimer);
+  pauseTimer=setInterval(function(){ n--; if(n<=0){clearInterval(pauseTimer); $("pause-step-1").classList.add("hidden"); $("pause-step-2").classList.remove("hidden");} else $("pause-count").textContent=n; },1000);
+}
+function chooseWatch(){
+  var mins=Number($("pause-intend").value)||15;
+  $("pause-step-2").classList.add("hidden"); startCountdown(mins*60,"watch",mins,"Đang đếm giờ xem — hết giờ hãy dừng lại và ghi thật.");
+}
+function chooseSwap(){
+  $("pause-step-2").classList.add("hidden");
+  startCountdown(15*60,"swap",15,"Đang đổi 15 phút: "+selected.swap);
+}
+function startCountdown(seconds,mode,mins,label){
+  stopTimerSilent();
+  timerMode=mode; timerMinutes=mins; timerEnd=Date.now()+seconds*1000;
+  $("timer-area").classList.remove("hidden"); $("timer-label").textContent=label; $("timer-msg").textContent="";
+  tickTimer();
+  timer=setInterval(tickTimer,1000);
+}
+function tickTimer(){
+  var left=Math.max(0,Math.round((timerEnd-Date.now())/1000));
+  var mm=Math.floor(left/60), ss=("0"+(left%60)).slice(-2);
+  $("timer-display").textContent=mm+":"+ss;
+  if(timerMode==="watch" && left===Math.round(timerMinutes*60*0.2) && !$("timer-msg").dataset.warned){
+    $("timer-msg").textContent="Còn 20% thời gian em đặt. Chuẩn bị dừng nhé."; $("timer-msg").dataset.warned="1";
+  }
+  if(left<=0){ clearInterval(timer); timer=null; $("timer-msg").textContent = timerMode==="watch" ? "Hết giờ! Dừng lại và ghi số phút thật nhé." : "Hết 15 phút đổi! Ghi nhận lần đổi của em nhé.";
+    try{ if(navigator.vibrate) navigator.vibrate(200); }catch(e){}
+  }
+}
+function stopTimerSilent(){ if(timer){clearInterval(timer); timer=null} }
+function stopTimer(record){
+  var used=timerMinutes;
+  var left=timer?Math.max(0,Math.round((timerEnd-Date.now())/1000)):0;
+  if(timerMode==="watch") used=Math.max(1, timerMinutes - Math.ceil(left/60));
+  stopTimerSilent(); $("timer-area").classList.add("hidden"); $("timer-msg").textContent=""; delete $("timer-msg").dataset.warned;
+  $("pause-step-1").classList.remove("hidden"); $("pause-step-2").classList.add("hidden");
+  if(record){
+    if(timerMode==="watch"){ $("log-minutes").value=used; document.getElementById("log-h").scrollIntoView({behavior:"smooth"}); $("log-minutes").focus(); }
+    else { recordSwap(selected.swap); }
+  }
+}
+function recordSwap(activity){
+  state.swaps.push({id:Date.now(),date:todayStr(),activity:activity||selected.swap});
+  renderAll();
+}
+function finishSwap(){ recordSwap(selected.swap); $("swap-timer-area").classList.add("hidden"); }
+function cancelSwap(){ $("swap-timer-area").classList.add("hidden"); stopTimerSilent(); }
+function startSwapTimer(){
+  $("swap-timer-area").classList.remove("hidden");
+  $("swap-label").textContent="Đang đổi 15 phút: "+selected.swap;
+  var end=Date.now()+15*60*1000;
+  stopTimerSilent();
+  var iv=setInterval(function(){ var left=Math.max(0,Math.round((end-Date.now())/1000)); $("swap-display").textContent=Math.floor(left/60)+":"+("0"+(left%60)).slice(-2); if(left<=0) clearInterval(iv); },1000);
+  $("swap-display").textContent="15:00";
+}
+
+$("log-form").addEventListener("submit",function(e){e.preventDefault();
+  var mins=Number($("log-minutes").value);
+  if(!mins||mins<1){$("log-error").textContent="Nhập số phút đã xem (ít nhất 1 phút)."; $("log-minutes").focus(); return}
+  $("log-error").textContent="";
+  state.logs.push({id:Date.now(),date:todayStr(),minutes:mins,platform:$("log-platform").value,slot:selected.slot,trigger:selected.trigger,mood:selected.mood,note:$("log-note").value.trim(),stopped:$("log-stopped").checked});
+  $("log-minutes").value=""; $("log-note").value=""; $("log-stopped").checked=false;
+  renderAll();
+});
+function deleteLog(id){ state.logs=state.logs.filter(function(l){return l.id!==id}); renderAll(); }
+
+$("reflect-form").addEventListener("submit",function(e){e.preventDefault();
+  var commit=$("ref-commit").value.trim(); if(!commit) return;
+  state.reflections=state.reflections.filter(function(r){return r.date!==todayStr()});
+  state.reflections.push({date:todayStr(),trigger:$("ref-trigger").value.trim(),worked:$("ref-worked").value.trim(),commit:commit});
+  $("ref-trigger").value=""; $("ref-worked").value=""; $("ref-commit").value=""; renderAll();
+});
+
+function startChallenge(){
+  var kind=$("challenge-select").value;
+  state.challenge={kind:kind,start:todayStr(),done:{}};
+  renderAll();
+}
+function challengeLabel(kind){
+  return {"less10":"Giảm 10 phút mỗi ngày so với hôm qua","nolatenight":"Không xem sau giờ đi ngủ","oneswap":"Mỗi ngày 1 lần đổi 15 phút","pause":"Dừng 10 giây trước mỗi lần xem"}[kind]||kind;
+}
+function challengeMet(ds){
+  if(!state.challenge) return false;
+  var kind=state.challenge.kind;
+  if(kind==="nolatenight") return lateOn(ds)===0 && state.logs.some(function(l){return l.date===ds});
+  if(kind==="oneswap") return swapsOn(ds)>=1;
+  if(kind==="less10"){
+    var prev=new Date(ds+"T12:00:00"); prev.setDate(prev.getDate()-1);
+    return minutesOn(ds) < minutesOn(dateStr(prev)) || minutesOn(ds)===0;
+  }
+  return state.challenge.done && state.challenge.done[ds]===true;
+}
+
+function renderToday(){
+  var ds=todayStr(); var d=new Date();
+  $("today-date").textContent="Hôm nay · "+d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()+" · "+(state.profile.name?esc(state.profile.name)+" · ":"")+(state.profile.className?esc(state.profile.className)+" · ":"")+"Giờ không xem sau "+esc(state.profile.bedtime);
+  var mins=minutesOn(ds), limit=state.profile.limit;
+  $("today-minutes").textContent=mins; $("limit-label").textContent=limit+" phút"; $("left-label").textContent=Math.max(0,limit-mins)+" phút";
+  var pct=Math.min(100,Math.round(mins/limit*100));
+  var fill=$("meter-fill"); fill.style.width=pct+"%"; fill.className=mins>limit?"over":"";
+  var st=$("today-status");
+  if(mins===0){st.className="status ok"; st.textContent="Chưa ghi phút nào hôm nay. Tốt — hãy giữ nhịp này."}
+  else if(mins<=limit*0.5){st.className="status ok"; st.textContent="Đang trong giới hạn, còn "+(limit-mins)+" phút. Giữ nhịp này đến tối nhé."}
+  else if(mins<=limit){st.className="status warn"; st.textContent="Sắp chạm giới hạn — còn "+(limit-mins)+" phút. Dừng 10 giây trước lần xem tiếp theo."}
+  else {st.className="status over"; st.textContent="Đã vượt giới hạn "+(mins-limit)+" phút. Không sao — dừng lại bây giờ vẫn là một lần thắng. Ghi lý do và chọn 1 lần đổi 15 phút."}
+  // streak: consecutive days ending today or yesterday within limit, with at least one log or a zero day after challenge start? Count days with data; a day counts if minutes<=limit and (logs exist or it's in history)
+  var streak=0; var cur=new Date();
+  // allow starting from yesterday if today has no logs yet
+  if(mins===0 && state.logs.length===0) streak=0;
+  else{
+    var cursor=new Date(); var started=false;
+    for(var i=0;i<30;i++){
+      var ds2=dateStr(cursor);
+      var has=state.logs.some(function(l){return l.date===ds2})||state.swaps.some(function(s){return s.date===ds2});
+      if(!has){ if(i===0){cursor.setDate(cursor.getDate()-1); continue} break; }
+      if(minutesOn(ds2)<=limit) streak++; else break;
+      cursor.setDate(cursor.getDate()-1);
+    }
+  }
+  $("kpi-streak").textContent=streak+" ngày";
+  $("kpi-swaps").textContent=swapsOn(ds);
+  $("kpi-late").textContent=lateOn(ds);
+  var last7=[]; for(var j=6;j>=0;j--){var dd=new Date(); dd.setDate(dd.getDate()-j); last7.push(minutesOn(dateStr(dd)))}
+  var withData=last7.filter(function(v,i){var dd=new Date(); dd.setDate(dd.getDate()-(6-i)); return state.logs.some(function(l){return l.date===dateStr(dd)})});
+  $("kpi-avg").textContent=withData.length?Math.round(withData.reduce(function(a,b){return a+b},0)/withData.length)+" phút":"—";
+  // commitment
+  var ref=state.reflections.filter(function(r){return r.date===ds})[0] || state.reflections.slice().sort(function(a,b){return a.date<b.date?-1:1}).pop();
+  var box=$("commitment-box");
+  if(ref && ref.commit){box.classList.remove("hidden"); box.innerHTML="<b>Cam kết gần nhất:</b> "+esc(ref.commit)}
+  else box.classList.add("hidden");
+}
+function renderLogs(){
+  var el=$("log-list");
+  var todays=state.logs.filter(function(l){return l.date===todayStr()}).slice().reverse();
+  if(!todays.length){el.innerHTML='<div class="empty">Chưa có lần ghi nào hôm nay. Ghi ngay sau lần xem đầu tiên — ghi thật là bước quan trọng nhất.</div>'; return}
+  el.innerHTML=todays.map(function(l){
+    return '<div class="log-item"><div><b>'+l.minutes+' phút</b> · '+esc(l.platform)+'<br><span class="tag">'+esc(l.slot)+'</span><span class="tag">'+esc(l.trigger)+'</span><span class="tag">'+esc(l.mood)+'</span>'+(l.stopped?' <span class="tag">Dừng đúng lúc</span>':'')+(l.note?'<br><span class="notice">'+esc(l.note)+'</span>':'')+'</div><button class="btn small danger" type="button" onclick="deleteLog('+l.id+')">Xóa</button></div>';
+  }).join("");
+  var sl=$("swap-list");
+  var sw=state.swaps.filter(function(s){return s.date===todayStr()}).slice().reverse();
+  sl.innerHTML=sw.length?'<p style="margin-top:12px"><b>Hôm nay đã đổi:</b></p>'+sw.map(function(s){return '<div class="log-item"><div>'+esc(s.activity)+' · 15 phút</div></div>'}).join(""):"";
+}
+function renderChart(){
+  var chart=$("bar-chart"); var max=Math.max(state.profile.limit,1);
+  var html="";
+  for(var j=6;j>=0;j--){
+    var dd=new Date(); dd.setDate(dd.getDate()-j); var ds=dateStr(dd); var m=minutesOn(ds);
+    max=Math.max(max,m);
+    var h=m===0?4:Math.max(8,Math.round(m/max*120));
+    html+='<div class="bar-col"><b>'+(m||"")+'</b><div class="bar'+(m>state.profile.limit?" over":"")+'" style="height:'+h+'px" title="'+m+' phút"></div><small>'+dayLabel(ds)+'</small></div>';
+  }
+  chart.innerHTML=html;
+  // insights
+  var all=state.logs;
+  var box=$("insight-box");
+  if(!all.length){box.innerHTML='<div class="empty">Chưa có dữ liệu để thấy mẫu hình. Ghi 2–3 ngày, phần này sẽ tự hiện: lý do, khung giờ và nền tảng hay gặp nhất của em.</div>'; return}
+  function topOf(key){var c={}; all.forEach(function(l){c[l[key]]=(c[l[key]]||0)+1}); var best="",bn=0; Object.keys(c).forEach(function(k){if(c[k]>bn){bn=c[k];best=k}}); return best+" ("+bn+" lần)"}
+  var lateTotal=all.filter(function(l){return l.slot==="Sau giờ đi ngủ"}).length;
+  var overDays=0; var seen={}; all.forEach(function(l){seen[l.date]=true}); Object.keys(seen).forEach(function(ds){if(minutesOn(ds)>state.profile.limit)overDays++});
+  box.innerHTML='<div class="banner info"><b>Mẫu hình của em:</b> Lý do hay gặp nhất: <b>'+esc(topOf("trigger"))+'</b> · Khung giờ hay gặp: <b>'+esc(topOf("slot"))+'</b> · Nền tảng hay gặp: <b>'+esc(topOf("platform"))+'</b> · Xem khuya: <b>'+lateTotal+' lần</b> · Số ngày vượt giới hạn: <b>'+overDays+'</b>. Hãy sửa đúng một điểm hay gặp nhất trong tuần tới.</div>';
+}
+function renderChallenge(){
+  var box=$("challenge-box");
+  if(!state.challenge){box.innerHTML='<div class="empty">Chưa có thử thách nào đang chạy. Chọn một thử thách ở trên và bắt đầu từ hôm nay.</div>'; return}
+  var rows="";
+  for(var j=0;j<7;j++){
+    var dd=new Date(state.challenge.start+"T12:00:00"); dd.setDate(dd.getDate()+j); var ds=dateStr(dd);
+    var met=challengeMet(ds); var isToday=ds===todayStr();
+    var checked=state.challenge.done && state.challenge.done[ds];
+    rows+='<div class="checkline"><input type="checkbox" id="ch-'+ds+'" '+(checked?"checked":"")+' onchange="toggleChallengeDay(\''+ds+'\',this.checked)"><label for="ch-'+ds+'" style="margin:0"><b>'+dayLabel(ds)+'</b>'+(isToday?" · hôm nay":"")+' — '+minutesOn(ds)+' phút · '+swapsOn(ds)+' lần đổi · '+(met?"Đạt":"Chưa đạt")+'</label></div>';
+  }
+  var doneCount=0; for(var k=0;k<7;k++){var d2=new Date(state.challenge.start+"T12:00:00"); d2.setDate(d2.getDate()+k); if(challengeMet(dateStr(d2))) doneCount++}
+  box.innerHTML='<p style="margin-top:12px"><b>Đang chạy:</b> '+esc(challengeLabel(state.challenge.kind))+' · từ '+fmtDateVN(state.challenge.start)+' · <b>'+doneCount+'/7 ngày đạt</b></p>'+rows+'<p class="notice">Tích vào ô khi em đã thực hiện “Dừng 10 giây” hôm đó. Các thử thách khác tự tính từ nhật ký và lần đổi của em.</p>';
+}
+function toggleChallengeDay(ds,val){ if(!state.challenge.done) state.challenge.done={}; state.challenge.done[ds]=val; saveState(); renderChallenge(); }
+function renderReflections(){
+  var el=$("reflect-list");
+  if(!state.reflections.length){el.innerHTML='<div class="empty">Chưa có nhìn lại nào. Tối nay viết 3 dòng đầu tiên nhé.</div>'; return}
+  el.innerHTML=state.reflections.slice().reverse().map(function(r){
+    return '<div class="log-item"><div><b>'+fmtDateVN(r.date)+'</b> · Cam kết: '+esc(r.commit)+'<br><span class="notice">Khiến em xem nhiều: '+esc(r.trigger||"—")+' · Giúp em dừng: '+esc(r.worked||"—")+'</span></div></div>';
+  }).join("");
+}
+function renderAll(){ renderToday(); renderLogs(); renderChart(); renderChallenge(); renderReflections(); $("demo-banner").classList.toggle("hidden",!state.demo); saveState(); }
+
+function encodeData(obj){
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); }catch(e){ return "" }
+}
+function decodeData(code){
+  try{ return JSON.parse(decodeURIComponent(escape(atob(String(code).trim().replace(/\s+/g,""))))); }catch(e){ return null }
+}
+function reportObject(){
+  return {v:1,name:state.profile.name,className:state.profile.className,limit:state.profile.limit,bedtime:state.profile.bedtime,logs:state.logs,swaps:state.swaps,reflections:state.reflections,challenge:state.challenge};
+}
+function makeReportCode(){
+  if(!state.logs.length && !state.swaps.length){ $("share-status").textContent="Chưa có dữ liệu nào để tạo mã. Ghi ít nhất một lần xem hoặc một lần đổi trước đã."; return }
+  var code=encodeData(reportObject());
+  $("report-code").value=code;
+  var days={}; state.logs.forEach(function(l){days[l.date]=1}); state.swaps.forEach(function(s){days[s.date]=1});
+  $("share-status").textContent="Mã đã tạo — gồm "+state.logs.length+" lần ghi, "+state.swaps.length+" lần đổi, "+Object.keys(days).length+" ngày có dữ liệu. Chỉ gửi mã này cho người em tin tưởng.";
+}
+function copyCode(){
+  var ta=$("report-code"); if(!ta.value){makeReportCode(); if(!ta.value) return}
+  ta.select();
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(function(){$("share-status").textContent="Đã chép mã. Dán vào tin nhắn gửi cho thầy cô / phụ huynh."}).catch(function(){document.execCommand("copy"); $("share-status").textContent="Đã chép mã."}) }
+  else { document.execCommand("copy"); $("share-status").textContent="Đã chép mã." }
+}
+function sendMail(){
+  if(!$("report-code").value) makeReportCode();
+  var email=$("report-email").value.trim();
+  var ds=todayStr();
+  var subject="Báo cáo quản lý video ngắn — "+(state.profile.name||"học sinh")+" — "+fmtDateVN(ds);
+  var body="Chào thầy/cô (hoặc bố/mẹ),\n\nEm gửi báo cáo tự theo dõi video ngắn của em.\nGiới hạn mỗi ngày: "+state.profile.limit+" phút. Hôm nay em đã ghi "+minutesOn(ds)+" phút, "+swapsOn(ds)+" lần đổi 15 phút, "+lateOn(ds)+" lần xem khuya.\n\nMã báo cáo đầy đủ (dán vào app ở chế độ Giáo viên để xem chi tiết):\n"+$("report-code").value+"\n\nEm tự ghi số liệu, app không tự đo điện thoại. Em cảm ơn thầy/cô (bố/mẹ) đã xem.\n";
+  var href="mailto:"+(email?encodeURIComponent(email):"")+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+  var mailLink=document.createElement("a"); mailLink.href=href; document.body.appendChild(mailLink); mailLink.click(); mailLink.remove();
+  $("share-status").textContent="Đã mở ứng dụng mail trên máy em. Kiểm tra nội dung rồi bấm Gửi trong ứng dụng mail.";
+}
+function downloadJSON(){
+  var blob=new Blob([JSON.stringify(reportObject(),null,2)],{type:"application/json"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="video-ngan-"+todayStr()+".json"; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+}
+function importJSON(ev){
+  var f=ev.target.files && ev.target.files[0]; if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(){ try{ var obj=JSON.parse(rd.result); applyImported(obj); $("share-status").textContent="Đã nhập dữ liệu. Kiểm tra lại nhật ký và biểu đồ 7 ngày."; }catch(e){ $("share-status").textContent="File không đọc được. Hãy chọn đúng file .json do app này xuất ra."; } };
+  rd.readAsText(f); ev.target.value="";
+}
+function applyImported(obj){
+  if(!obj||!unlocked) return;
+  // Imported files never carry a personal code: the code of the currently
+  // unlocked profile stays untouched, and data lands only in that profile.
+  if(obj.profile){ state.profile.name=obj.profile.name||state.profile.name; state.profile.className=obj.profile.className||""; state.profile.limit=obj.profile.limit||45; state.profile.bedtime=obj.profile.bedtime||"22:00"; }
+  else if(obj.name!==undefined){ state.profile.name=obj.name||state.profile.name; state.profile.className=obj.className||""; state.profile.limit=obj.limit||45; state.profile.bedtime=obj.bedtime||"22:00"; }
+  state.logs=obj.logs||[]; state.swaps=obj.swaps||[]; state.reflections=obj.reflections||[]; state.challenge=obj.challenge||null; state.demo=false;
+  renderAll();
+}
+function loadDemo(){
+  var today=new Date();
+  function dsOff(n){var d=new Date(today); d.setDate(d.getDate()-n); return dateStr(d)}
+  var demo=findProfile("demo-profile");
+  if(!demo){ demo=blankRecord(); demo.id="demo-profile"; store.profiles.push(demo); }
+  demo.createdAt=Date.now(); demo.demo=true;
+  demo.profile={name:"Bạn mẫu",className:"12A3",limit:45,bedtime:"22:00",pinHash:hashPin("1234")};
+  demo.logs=[
+    {id:1,date:dsOff(6),minutes:70,platform:"TikTok",slot:"Tối",trigger:"Buồn chán",mood:"Mệt",note:"",stopped:false},
+    {id:2,date:dsOff(5),minutes:55,platform:"YouTube Shorts",slot:"Tối",trigger:"Thói quen, tay tự mở",mood:"Bình thường",note:"",stopped:false},
+    {id:3,date:dsOff(4),minutes:40,platform:"TikTok",slot:"Chiều",trigger:"Buồn chán",mood:"Bình thường",note:"",stopped:true},
+    {id:4,date:dsOff(3),minutes:30,platform:"Facebook Reels",slot:"Trưa",trigger:"Bạn bè gửi link",mood:"Vui",note:"",stopped:true},
+    {id:5,date:dsOff(2),minutes:48,platform:"TikTok",slot:"Sau giờ đi ngủ",trigger:"Khó ngủ",mood:"Mệt",note:"",stopped:false},
+    {id:6,date:dsOff(1),minutes:35,platform:"TikTok",slot:"Tối",trigger:"Buồn chán",mood:"Bình thường",note:"",stopped:true},
+    {id:7,date:dsOff(0),minutes:20,platform:"TikTok",slot:"Chiều",trigger:"Chờ đợi / rảnh tay",mood:"Bình thường",note:"",stopped:true}
+  ];
+  demo.swaps=[{id:11,date:dsOff(1),activity:"Đi bộ / vận động"},{id:12,date:dsOff(0),activity:"Đọc 15 phút"}];
+  demo.reflections=[{date:dsOff(1),trigger:"Buồn chán sau giờ học",worked:"Hẹn giờ 15 phút",commit:"Không mở TikTok sau 21:30"}];
+  demo.challenge={kind:"less10",start:dsOff(6),done:{}};
+  saveState(); unlockRecord(demo);
+  document.getElementById("today-h").scrollIntoView({behavior:"smooth"});
+}
+function applyClassSettings(){
+  classLimit=Math.max(10,Number($("class-limit").value)||45);
+  classBedtime=$("class-bedtime").value||"22:00";
+  $("class-status").textContent="Đã áp dụng: giới hạn tham khảo "+classLimit+" phút/ngày, không xem sau "+classBedtime+". Bấm “Xem tổng hợp” lại để tính theo ngưỡng mới.";
+}
+function aggregateReports(){
+  var raw=$("teacher-codes").value.trim();
+  var out=$("teacher-result");
+  if(!raw){out.innerHTML='<div class="empty">Chưa dán mã nào. Dán ít nhất một mã báo cáo học sinh gửi.</div>'; return}
+  var lines=raw.split(/\n+/).map(function(s){return s.trim()}).filter(Boolean);
+  var reports=[], bad=0;
+  lines.forEach(function(ln){ var o=decodeData(ln); if(o&&o.logs) reports.push(o); else bad++; });
+  if(!reports.length){out.innerHTML='<div class="empty">Không đọc được mã nào. Hãy chép đúng toàn bộ mã học sinh gửi, không thêm khoảng trắng hay dòng chữ khác.</div>'; return}
+  var totalMin=0, totalLogs=0, over=0, late=0, swaps=0, trig={};
+  var rows=reports.map(function(r){
+    var days={}; r.logs.forEach(function(l){days[l.date]=(days[l.date]||0)+Number(l.minutes||0); totalMin+=Number(l.minutes||0); totalLogs++; if(l.slot==="Sau giờ đi ngủ") late++; trig[l.trigger]=(trig[l.trigger]||0)+1;});
+    r.swaps.forEach(function(){swaps++});
+    var dayVals=Object.keys(days).map(function(k){return days[k]});
+    var avg=dayVals.length?Math.round(dayVals.reduce(function(a,b){return a+b},0)/dayVals.length):0;
+    var overDays=dayVals.filter(function(v){return v>classLimit}).length; over+=overDays;
+    var lastDay=Object.keys(days).sort().pop(); var lastMin=lastDay?days[lastDay]:0;
+    return {name:r.name||"(không ghi tên)",cls:r.className||"—",avg:avg,days:Object.keys(days).length,last:lastMin,overDays:overDays,swaps:r.swaps.length,limit:r.limit||classLimit};
+  });
+  var topTrig="—", topN=0; Object.keys(trig).forEach(function(k){if(trig[k]>topN){topN=trig[k];topTrig=k}});
+  var within=rows.filter(function(r){return r.last<=classLimit}).length;
+  out.innerHTML='<div class="kpis" style="margin-top:14px">'
+    +'<div class="kpi"><b>'+reports.length+'</b><span>Học sinh đã gửi mã'+(bad?' · '+bad+' mã không đọc được':'')+'</span></div>'
+    +'<div class="kpi"><b>'+(reports.length?Math.round(totalMin/Math.max(1,reports.length)):"0")+' phút</b><span>Tổng phút ghi / em (toàn bộ mã)</span></div>'
+    +'<div class="kpi"><b>'+within+'/'+reports.length+'</b><span>Em trong giới hạn ngày gần nhất</span></div>'
+    +'<div class="kpi"><b>'+esc(topTrig)+'</b><span>Lý do hay gặp nhất ('+topN+' lần ghi)</span></div></div>'
+    +'<p class="notice" style="margin-top:10px">Tổng lần đổi 15 phút: <b>'+swaps+'</b> · Lần xem khuya đã ghi: <b>'+late+'</b> · Ngày vượt ngưỡng tham khảo ('+classLimit+' phút): <b>'+over+'</b>. Đây là số liệu tự ghi của học sinh, không phải đo tự động.</p>'
+    +'<table><thead><tr><th>Học sinh</th><th>Lớp</th><th>Ngày có dữ liệu</th><th>Trung bình / ngày</th><th>Ngày gần nhất</th><th>Ngày vượt ngưỡng</th><th>Lần đổi</th></tr></thead><tbody>'
+    +rows.map(function(r){return '<tr><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.cls)+'</td><td>'+r.days+'</td><td>'+r.avg+' phút</td><td class="'+(r.last<=classLimit?'pill-ok':'pill-bad')+'">'+r.last+' phút</td><td>'+r.overDays+'</td><td>'+r.swaps+'</td></tr>'}).join("")
+    +'</tbody></table>';
+  window._teacherRows=rows;
+}
+function downloadCSV(){
+  var rows=window._teacherRows;
+  if(!rows||!rows.length){$("teacher-result").innerHTML='<div class="empty">Bấm “Xem tổng hợp” trước đã.</div>'; return}
+  var csv="Hoc sinh,Lop,Ngay co du lieu,Trung binh moi ngay (phut),Ngay gan nhat (phut),Ngay vuot nguong,Lan doi\n"
+    +rows.map(function(r){return '"'+String(r.name).replace(/"/g,'""')+'","'+r.cls+'",'+r.days+','+r.avg+','+r.last+','+r.overDays+','+r.swaps}).join("\n");
+  var blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="tong-hop-video-ngan.csv"; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+}
+
+// swap chips act as start buttons too
+document.addEventListener("click",function(e){
+  var chip=e.target.closest && e.target.closest("#swap-chips .chip");
+  if(chip){ startSwapTimer(); }
+});
+loadState();
+buildChips();
+// Every load starts locked: a personal code is mandatory to open any profile,
+// including profiles created before this change (they must set a code first).
+showGate();
+</script>
+</body>
+</html>
